@@ -5,4 +5,4 @@ Matlab and Python implementations for quantum diffusion control (QDC) for the pa
 Work in progress.
 
 
-Aarón Villanueva (c)
+(c) 2025 Aarón Villanueva
