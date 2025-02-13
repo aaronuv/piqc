@@ -7,9 +7,7 @@ WORK IN PROGRESS.
 In the base folder there are two implementations of QDC for one qubit and NMR multi-qubit systems.
 For the NMR there are examples for 2, 4, and 7 qubits.
 
-If you find this repository useful, please cite the preprint **https://doi.org/10.48550/arXiv.2410.18635**
-
-
+If you find this repository useful, please cite the preprint **https://doi.org/10.48550/arXiv.2410.18635**.
 
 
 
