@@ -1,88 +1,63 @@
 import attr
 import jax.numpy as jnp
 
+# this can be a container for the model, but it if has a method, then is a class
+class Model:
+    # H0, Hc or smth
+    def propagate(self):
+        ...
 
-@attr
+# then you call psi_T = nmr.propagate (psi0, ...)
+
+# def u = qdc_update(u)
+
+# ψ = ψ_update(ψ, dΛ)
+
+
+
+
+
+
+
+
+@attr.s
 class QDC:
     # attrs
 
     # methods
+
     def solve(self):
+        ψ = self.solve_dynamics(u, ψ0,...) #TODO: define, shape=(n_traj, N)
+        # also psi as output, can be a tensor of many legs, but I do not see the purpose
+        # for the IS loop
+
         U = dt*jnp.sum(u**2)
         Su=0.5*R * U
         S_girsanov = R * jnp.einsum(f'{A}t, j{A}t -> j', u, dW) #TODO: define A
         F = jnp.einsum('jμ, μν, jν -> j', jnp.conj(ψ), Qm, ψ) #TODO: define Qm
         S = -0.5* F + Su + S_girsanov
     
-        F_all(p)=F;
-    F_min_allp(j) =-2/Q*max(Send);
+        F_all[p] = jnp.mean(F)
+        F_min_all[p] = jnp.min(F)
 
-    fprintf('F: %f %f \n',F_allp(j),4/Q^2*sqrt(std(Send)))
-    S=S+Send;
-    %S=S+S_path+Send;
+        print(f'F: {F_all[p]}, std: {jnp.sqrt(jnp.std(F))}')
     
-    Smin=min(S);
-	S=S-Smin;
-	w=exp(-S/lambda);
+        Smin = jnp.min(S)
+        S = S - Smin
+        w = jnp.exp(-S/λ) #TODO: define λ
 
-	Jp(j)=Smin-lambda*log(mean(w));
-	w=w/sum(w);
-	ssp(j)=1/sum(w.^2)/n_traj;
+        J[p] = Smin - λ*jnp.log(jnp.mean(w))
+        w = w/jnp.sum(w)
+        ess[p] = 1/jnp.sum(w**2)/n_traj
 
-    if mod(j, nIS)==0
-        figure(1)
-        subplot(2,2,1)
-        plot(ssp)
-        ylabel('ss')
-        subplot(2,2,2)
-        plot(Jp)
-        ylabel('J')
-        subplot(2,2,3)
-        plot(u_normp)
-        ylabel('norm u')
-        subplot(2,2,4)
-        plot(1:nIS,F_allp,1:nIS,F_min_allp)
-        ylabel('F')
-        drawnow
-
-        figure(2)
-        for a=1:n
-        subplot(n,1,a)
-        plot(dt*(1:NT),reshape(u_av(:,a,:), [2, NT])')
-        end
-
-%         figure(3)
-%         subplot(3,1,1)
-%         plot(dt*(1:NT),squeeze(m_all(:,:,1)),T,mphi(1),'k*');
-%         axis([0 1.1*T -1 1]);
-%         subplot(3,1,2)
-%         plot(dt*(1:NT),squeeze(m_all(:,:,2)),T,mphi(2),'k*');
-%         axis([0 1.1*T -1 1]);
-%         subplot(3,1,3)
-%         plot(dt*(1:NT),squeeze(m_all(:,:,3)),T,mphi(3),'k*');
-%         axis([0 1.1*T -1 1]);
-
-        figure(4)
-        plot(dt*(1:NT),fid);
-        axis([0 1.1*T 0 1]);
-
-        [spec, freq] = getSpectrum(mean(fid, 1), T);
-        figure(5)
-        plot(freq, spec)
-
-        drawnow
-    end
-
-
-    % K equal time intervals
-    % NT is divisible by K
-    N2=floor(NT/K);
-    for k=1:K
-        iv=((k-1)*N2+1):(k*N2);
-        klad=1/dt/N2*tensorprod(w, sum(dW(:,:,:,iv), 4), 1, 1);
-        u(:,:,iv)=u(:,:,iv) + reshape(klad, [2, n, 1]);
-    end
-    u1_allp(j,:)=u(:);
-
-    win=min(j-jw, is_window);
-    u_av=1/win*reshape(sum(u1_allp(j-win+1:j,:,:,:),1), [2, n, NT]);
+        # K equal time intervals
+        # NT is divisible by K
+        N2 = jnp.floor(NT/K)
+        for k in range(1, K+1):
+            iv = jnp.arange((k-1)*N2, k*N2)
+            Δu = 1/dt/N2*jnp.tensordot(w, jnp.sum(dW[..., iv], axis=-1), axes=1)
+            u[..., iv] = u[..., iv] + jnp.reshape(Δu, (-1, 1))
+        
+        u_all[p] = u
+        win = min(j-jw, is_window)
+        u_av = 1/win * jnp.sum(u_all[j-win+1:j,...], axis=1)
