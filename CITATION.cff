@@ -1,0 +1,13 @@
+cff-version: 1.0.0
+message: "If you use this software, please cite it as below."
+title: "piqc"
+type: software
+authors:
+  - family-names: "Villanueva"
+    given-names: "Aarón"
+repository-code: "https://github.com/aaronuv/piqc"
+url: "https://doi.org/10.5281/zenodo.20742265"
+version: "1.0"
+date-released: "2026-06-18"
+doi: "10.5281/zenodo.20742265"
+license: "MIT"
