@@ -1,6 +1,6 @@
 # Path integral Quantum Control
 
-Matlab implementations for the Path integral Quantum Control (PiQC) algorithm supporting the paper [Stochastic optimal control of open quantum systems. A. Villanueva and H. Kappen (2025)](https://arxiv.org/abs/2410.18635).
+Matlab implementations for the Path integral Quantum Control (PiQC) algorithm supporting the paper [Path integral control of open quantum systems. A. Villanueva and H. Kappen (2025)](https://arxiv.org/abs/2410.18635).
 
 In the base folder there are two implementations of PiQC for one qubit and NMR multi-qubit systems.
 For the NMR there are examples for 2, 4, and 7 qubits.
